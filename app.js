@@ -64,7 +64,7 @@ io.on('connection', function (socket) {
   socketOperations(socket); // Llamamos al método para las operaciones de tiempo real
 });
 
-mongoose.connect('mongodb+srv://admin:admin123@cluster0.n76gtpi.mongodb.net/Hidreal?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://admin:admin123@cluster0.n76gtpi.mongodb.net/boletos?retryWrites=true&w=majority')
 //mongoose.connect('mongodb://127.0.0.1:27017/boletos')
   .then(() => {
     server.listen(port, function() {
