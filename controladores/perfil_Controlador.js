@@ -14,6 +14,7 @@ var handlebars = require('handlebars');
 var ejs = require('ejs');
 const carrito_venta = require('../modelos/carrito_admin');
 const venta = require('../modelos/venta');
+const boleto = require('../modelos/boleto');
 
 
 
@@ -29,7 +30,7 @@ exports.loginPerfil = async (req, res) => {
         perfil_arreglo = await Perfil.find({ matricula: data.matricula });
     
         if (perfil_arreglo.length == 0) {
-            res.status(200).send({ message: 'No se encontro la matricula', data: undefined });
+            res.status(200).send({ message: 'No se encontro el usuario', data: undefined });
         } else {
             // LOGIN
             let usuario = perfil_arreglo[0];
@@ -323,4 +324,31 @@ exports.registrar_boletos = async (req, res) => {
     } else {
         res.status(500).send({ message: 'Sin acceso' });
     }
+};
+
+exports.cancelar_boletos = async (req, res) => {
+  try {
+    var data = req.body;
+    console.log(data);
+
+    // Obtener array de IDs de boletos desde el campo 'boleto'
+    let boletosIds = data.map(item => item.boleto._id);
+    console.log('ids', boletosIds);
+
+    // Actualizar el estado de todos los boletos a 'disponible'
+    let reg2 = await Boleto.updateMany(
+      { _id: { $in: boletosIds } }, // Filtrar por los IDs de boletos en el arreglo
+      { $set: { status: 'disponible' } } // Asegurarse de usar $set para establecer el nuevo estado
+    );
+    console.log(reg2);
+
+    // Eliminar los documentos de carrito_venta
+    await carrito_venta.deleteMany({});
+
+   
+    res.status(200).send({ data: reg2 });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error en el servidor' });
+  }
 };

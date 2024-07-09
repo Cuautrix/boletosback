@@ -23,6 +23,7 @@ router.get('/obtener_ventas',auth.auth,perfilControlador.obtener_ventas);
 
 router.get('/obtener_admin_usuario/:id',auth.auth,perfilControlador.obtener_admin_usuario);
 router.get('/cancelar_boleto/:id',auth.auth,perfilControlador.cancelar_boleto);
+router.post('/cancelar_boletos',auth.auth,perfilControlador.cancelar_boletos);
 
 
 router.get('/filtro_encargado', auth.auth, perfilControlador.filtro_encargado);
