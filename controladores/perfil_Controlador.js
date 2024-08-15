@@ -94,6 +94,36 @@ exports.obtener_boletos_por_rango = async (req, res) => {
     }
   };
 
+  exports.obtener_boletos_busqueda = async (req, res) => {
+    try {
+      const { numero } = req.params;
+      const num = parseInt(numero);
+  
+      if (isNaN(num) || num < 1) {
+        return res.status(400).send('Número inválido');
+      }
+  
+      // Calcula el rango de 5 números antes y 5 después
+      const start = num - 5;
+      const end = num + 5;
+  
+      // Busca los boletos en el rango especificado
+      const boletos = await Boleto.find({ numero: { $gte: start, $lte: end } });
+  
+      // Formatea los boletos
+      const boletosFormateados = boletos.map(boleto => ({
+        _id: boleto._id,
+        numero: boleto.numero,
+        status: boleto.status
+      }));
+  
+      res.status(200).send({ data: boletosFormateados });
+    } catch (err) {
+      res.status(500).send('Error al obtener boletos por rango');
+    }
+  };
+
+
 exports.registrar_boletos = async (req, res) => {
     try {
       const boletos = [];
