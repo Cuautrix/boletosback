@@ -123,6 +123,22 @@ exports.obtener_boletos_por_rango = async (req, res) => {
     }
   };
 
+  exports.obtener_boletos_verificar= async (req, res) => {
+    try {
+      const { numero } = req.params;
+      const num = parseInt(numero);
+  
+      if (isNaN(num) || num < 1) {
+        return res.status(400).send('Número inválido');
+      }
+  
+      // Busca los boletos en el rango especificado
+      const boletos = await Boleto.find({ numero: numero });
+      res.status(200).send({ data: boletos });
+    } catch (err) {
+      res.status(500).send('Error al obtener boletos por rango');
+    }
+  };
 
 exports.registrar_boletos = async (req, res) => {
     try {
@@ -156,18 +172,23 @@ exports.registrar_boletos = async (req, res) => {
             return res.status(404).send({ message: 'Boleto no encontrado' });
           }
   
-          // Actualizar el estado del boleto a 'comprado'
+          // **Nueva Validación**: Verificar si el boleto ya está registrado en la colección carrito_venta
+          let existeBoleto = await carrito_venta.findOne({ boleto: id });
+          if (existeBoleto) {
+            return res.status(400).send({ message: 'El boleto ya ha sido registrado en un carrito de ventas' });
+          }
+  
+          // Actualizar el estado del boleto a 'pendiente'
           let reg = await Boleto.findByIdAndUpdate(id, { status: 'pendiente' }, { new: true });
-          const data = {
-           carrito_venta:id_Carrito,
-           boleto:reg.id
-        };
+  
           if (reg) {
-            let reg2 = await carrito_venta.create(
-              data
-            )
-            // Actualizar el carrito de ventas agregando el id y número del boleto
-            
+            const data = {
+              carrito_venta: id_Carrito,
+              boleto: reg.id
+            };
+  
+            // Crear el nuevo registro en la colección carrito_venta
+            let reg2 = await carrito_venta.create(data);
   
             res.status(200).send({ data: reg });
           } else {
@@ -184,6 +205,9 @@ exports.registrar_boletos = async (req, res) => {
       res.status(403).send({ message: 'Sin acceso' });
     }
   };
+  
+
+
   exports.quitar_boleto = async (req, res) => {
     if (req.usuario) {
       if (req.usuario.role === 'Gerente') {

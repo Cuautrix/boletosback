@@ -14,6 +14,7 @@ const app = express();
 router.post('/login_perfil',perfilControlador.loginPerfil);
 router.get('/obtener_boletos_por_rango/:numero',perfilControlador.obtener_boletos_por_rango);
 router.get('/obtener_boletos_busqueda/:numero',perfilControlador.obtener_boletos_busqueda);
+router.get('/obtener_boletos_verificar/:numero',perfilControlador.obtener_boletos_verificar);
 
 router.get('/obtener_boletos_carrito/:id',auth.auth,perfilControlador.obtener_boletos_carrito);
 router.post('/registrar_boletos',perfilControlador.registrar_boletos);
