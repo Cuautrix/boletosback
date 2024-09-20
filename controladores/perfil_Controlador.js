@@ -406,3 +406,14 @@ exports.cancelar_boletos = async (req, res) => {
     res.status(500).send({ message: 'Error en el servidor' });
   }
 };
+
+
+exports.obtener_boletos = async (req, res) => {
+  try {
+    const reg = await boleto.find({});
+    res.status(200).send({ data: reg });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error en el servidor' });
+  }
+};

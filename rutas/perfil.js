@@ -24,6 +24,8 @@ router.put('/quitar_boleto/:id',auth.auth,perfilControlador.quitar_boleto);
 router.get('/obtener_total',auth.auth,perfilControlador.obtener_total);
 router.get('/obtener_ventas',auth.auth,perfilControlador.obtener_ventas);
 
+router.get('/obtener_boletos',auth.auth,perfilControlador.obtener_boletos);
+
 router.get('/obtener_admin_usuario/:id',auth.auth,perfilControlador.obtener_admin_usuario);
 router.get('/cancelar_boleto/:id',auth.auth,perfilControlador.cancelar_boleto);
 router.post('/cancelar_boletos',auth.auth,perfilControlador.cancelar_boletos);
